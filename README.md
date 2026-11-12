@@ -1,4 +1,4 @@
-# Slurm Console
+# OCI Slurm Console
 
 A web-based operations console for Slurm and OCI HPC clusters, with streamed output, GPU diagnostics, and optional node lifecycle tools.
 
