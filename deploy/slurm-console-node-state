@@ -1,0 +1,43 @@
+#!/usr/bin/python3 -I
+"""Root-owned sudo entry point: only explicit Slurm node DRAIN/RESUME."""
+import os
+import re
+import sys
+
+
+def validate(args):
+    if len(args) not in (2, 3) or not args[0].startswith("NodeName="):
+        raise ValueError("Expected NodeName=<nodes> State=DRAIN|RESUME [Reason=<reason>]")
+    nodes = args[0][9:].split(",")
+    if len(nodes) > 100 or any(
+        not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", node)
+        or node.upper() == "ALL" for node in nodes
+    ):
+        raise ValueError("Explicit node names are required; ALL and hostlist expressions are forbidden.")
+    if args[1] == "State=DRAIN":
+        if len(args) != 3 or not args[2].startswith("Reason="):
+            raise ValueError("DRAIN requires a reason.")
+        reason = args[2][7:]
+        if not reason.strip() or len(reason) > 200 or any(ord(c) < 32 or ord(c) == 127 for c in reason):
+            raise ValueError("Reason must be 1–200 printable characters.")
+    elif args[1] != "State=RESUME" or len(args) != 2:
+        raise ValueError("Only DRAIN with a reason or RESUME without extra arguments is permitted.")
+    return args
+
+
+def main():
+    try:
+        args = validate(sys.argv[1:])
+    except ValueError as exc:
+        print(f"Node state update rejected: {exc}", file=sys.stderr)
+        return 2
+    if os.geteuid() != 0:
+        print("This helper must be invoked using its restricted sudo rule.", file=sys.stderr)
+        return 1
+    # Fixed root-owned binary; no caller-controlled PATH or Python environment.
+    os.execve("/usr/local/bin/scontrol", ["scontrol", "update", *args],
+              {"PATH": "/usr/local/bin:/usr/bin:/bin", "LC_ALL": "C"})
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,2 @@
+# Optional read-only capacity topology utility (installed in the app venv).
+oci>=2.187,<3

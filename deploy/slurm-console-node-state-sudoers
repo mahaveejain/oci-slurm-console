@@ -1,0 +1,2 @@
+# The helper MUST be owned by root and not writable by ubuntu.
+ubuntu ALL=(root) NOPASSWD: /usr/local/sbin/slurm-console-node-state

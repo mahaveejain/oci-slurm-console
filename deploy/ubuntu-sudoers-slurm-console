@@ -1,0 +1,3 @@
+# Install with: visudo -f /etc/sudoers.d/slurm-console-deploy
+# This permits the CI deploy account to restart only this one service.
+ubuntu ALL=(root) NOPASSWD: /usr/bin/systemctl restart slurm-console

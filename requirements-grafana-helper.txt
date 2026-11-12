@@ -1,0 +1,2 @@
+# Mac only. Uses the installed Google Chrome; no browser download is needed.
+playwright>=1.55,<2

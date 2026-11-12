@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KeepAlive</key>
+	<true/>
+	<key>Label</key>
+	<string>com.mahaveerjain.slurm-grafana-browser-helper</string>
+	<key>ProcessType</key>
+	<string>Interactive</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/path/to/slurm-console/.venv/bin/python</string>
+		<string>/path/to/slurm-console/scripts/grafana_browser_helper.py</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/path/to/slurm-console/.slurm-console-tunnel/grafana-browser-helper.log</string>
+	<key>StandardOutPath</key>
+	<string>/path/to/slurm-console/.slurm-console-tunnel/grafana-browser-helper.log</string>
+	<key>ThrottleInterval</key>
+	<integer>10</integer>
+	<key>WorkingDirectory</key>
+	<string>/path/to/slurm-console</string>
+</dict>
+</plist>

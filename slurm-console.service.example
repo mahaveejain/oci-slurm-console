@@ -1,0 +1,20 @@
+[Unit]
+Description=Slurm Console Flask application
+After=network.target slurmctld.service
+
+[Service]
+Type=simple
+User=slurm-console
+Group=slurm-console
+WorkingDirectory=/opt/slurm-console
+Environment=SLURM_CONSOLE_TIMEOUT=60
+Environment=SLURM_CONSOLE_ALLOWED_COMMANDS=squeue,sinfo,scontrol,sacct,sstat,sbatch,scancel,mgmt
+ExecStart=/opt/slurm-console/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8080 app:app
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

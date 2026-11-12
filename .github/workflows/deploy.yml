@@ -1,0 +1,100 @@
+name: Test and deploy Slurm Console
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy to the configured test controller
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Prevent two releases from changing the controller at the same time.
+concurrency:
+  group: slurm-console-test
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install application dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Validate Python and run tests
+        run: |
+          python -m py_compile app.py
+          python -m unittest discover -s tests -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate browser behavior
+        run: |
+          for test in tests/test_*_ui.js; do node "$test"; done
+      - name: Check Gunicorn configuration
+        run: gunicorn --check-config app:app
+
+  deploy-test-controller:
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    environment: slurm-controller-test
+    env:
+      DEPLOY_HOST: ${{ secrets.SLURM_DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.SLURM_DEPLOY_USER }}
+      RELEASE_ID: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure deploy SSH identity and host verification
+        env:
+          DEPLOY_KEY: ${{ secrets.SLURM_DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.SLURM_DEPLOY_KNOWN_HOSTS }}
+        run: |
+          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_USER"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Package the reviewed source
+        run: |
+          tar -czf /tmp/slurm-console-${RELEASE_ID}.tar.gz \
+            --exclude-vcs --exclude='./.venv' --exclude='./__pycache__' \
+            --exclude='./.github' --exclude='./slurm.tar' .
+      - name: Upload release to controller
+        run: |
+          scp -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            /tmp/slurm-console-${RELEASE_ID}.tar.gz \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:/tmp/slurm-console-${RELEASE_ID}.tar.gz"
+      - name: Activate release and verify health
+        run: |
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "RELEASE_ID='${RELEASE_ID}' bash -s" <<'REMOTE'
+          set -euo pipefail
+          APP_ROOT=/home/ubuntu/slurm-console
+          RELEASE_DIR="$APP_ROOT/releases/$RELEASE_ID"
+          ARCHIVE="/tmp/slurm-console-$RELEASE_ID.tar.gz"
+
+          mkdir -p "$RELEASE_DIR"
+          tar -xzf "$ARCHIVE" -C "$RELEASE_DIR"
+          rm -f "$ARCHIVE"
+
+          if [ ! -x "$APP_ROOT/venv/bin/python" ]; then
+            python3 -m venv "$APP_ROOT/venv"
+          fi
+          "$APP_ROOT/venv/bin/pip" install -r "$RELEASE_DIR/requirements.txt"
+
+          ln -sfn "$RELEASE_DIR" "$APP_ROOT/current.next"
+          mv -Tf "$APP_ROOT/current.next" "$APP_ROOT/current"
+          sudo /usr/bin/systemctl restart slurm-console
+          curl --fail --silent --show-error http://127.0.0.1:8080/api/health
+          REMOTE

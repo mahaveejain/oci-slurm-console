@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OCI Slurm Console</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css', v='monitoring-incognito-20261016') }}">
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/"><span class="brand-mark">S</span><span>OCI Slurm <b>Console</b></span></a>
+      <div class="cluster-status"><i></i> Controller console <span>Secure command gateway</span></div>
+    </header>
+    <main data-view="overview">
+      <aside class="command-pane" aria-label="Operation navigation">
+        <div class="workspace-intro">
+          <span class="eyebrow">OPERATIONS WORKSPACE</span>
+          <h1>OCI Slurm Cluster <em>Operations.</em></h1>
+          <p class="lede">Choose a section to see its tools in the workspace.</p>
+        </div>
+        <nav class="operations-accordion" aria-label="Operation sections">
+          <div class="section-navigation">
+        <section class="operation-section lifecycle-section" data-operation-section aria-labelledby="lifecycle-title">
+          <h2 class="section-heading"><button id="lifecycle-title" class="section-toggle" data-section-toggle type="button" aria-expanded="false" aria-controls="lifecycle-content"><span class="section-number" aria-hidden="true">01</span><span class="section-copy"><span class="section-label">Node lifecycle</span><span class="section-description">Inventory, node state and compute changes</span></span><span class="section-chevron" aria-hidden="true"></span></button></h2>
+        </section>
+        <section class="operation-section management-section" data-operation-section aria-labelledby="management-title">
+          <h2 class="section-heading"><button id="management-title" class="section-toggle" data-section-toggle type="button" aria-expanded="false" aria-controls="management-content"><span class="section-number" aria-hidden="true">02</span><span class="section-copy"><span class="section-label">Management commands</span><span class="section-description">Services, configuration and network inventory</span></span><span class="section-chevron" aria-hidden="true"></span></button></h2>
+        </section>
+        <section class="operation-section command-section slurm-section" data-operation-section aria-labelledby="slurm-command-title">
+          <h2 class="section-heading"><button id="slurm-command-title" class="section-toggle" data-section-toggle type="button" aria-expanded="false" aria-controls="slurm-content"><span class="section-number" aria-hidden="true">03</span><span class="section-copy"><span class="section-label">Slurm commands</span><span class="section-description">Jobs, partitions and GPU tests</span></span><span class="section-chevron" aria-hidden="true"></span></button></h2>
+        </section>
+        <section class="operation-section troubleshooting-section" data-operation-section aria-labelledby="troubleshooting-title">
+          <h2 class="section-heading"><button id="troubleshooting-title" class="section-toggle" data-section-toggle type="button" aria-expanded="false" aria-controls="troubleshooting-content"><span class="section-number" aria-hidden="true">04</span><span class="section-copy"><span class="section-label">Trouble<wbr>shooting</span><span class="section-description">GPU health and node diagnostics</span></span><span class="section-chevron" aria-hidden="true"></span></button></h2>
+        </section>
+        <section class="operation-section utilities-section" data-operation-section aria-labelledby="utilities-title">
+          <h2 class="section-heading"><button id="utilities-title" class="section-toggle" data-section-toggle type="button" aria-expanded="false" aria-controls="utilities-content"><span class="section-number" aria-hidden="true">05</span><span class="section-copy"><span class="section-label">Utilities</span><span class="section-description">Node identity and quick lookups</span></span><span class="section-chevron" aria-hidden="true"></span></button></h2>
+        </section>
+        <section class="operation-section monitoring-section" data-operation-section aria-labelledby="monitoring-title">
+          <h2 class="section-heading"><button id="monitoring-title" class="section-toggle" data-section-toggle type="button" aria-expanded="false" aria-controls="monitoring-content"><span class="section-number" aria-hidden="true">06</span><span class="section-copy"><span class="section-label">Monitoring</span><span class="section-description">Grafana dashboards and reporting</span></span><span class="section-chevron" aria-hidden="true"></span></button></h2>
+        </section>
+          </div>
+        </nav>
+        <div class="sidebar-actions"><button id="open-command-console" class="workspace-button" type="button" aria-pressed="true">Command console</button><button id="refresh-console" class="refresh-console" type="button" title="Refresh page (Enter outside input fields)">↻ Refresh</button></div>
+      </aside>
+      <section class="workspace-pane" aria-label="Command workspace">
+        <div class="workspace-toolbar"><div class="workspace-page-heading"><span class="eyebrow">CLUSTER OPERATIONS</span><h2 id="workspace-view-title">Command console</h2></div><div class="workspace-actions"><button id="return-to-section" class="workspace-button" type="button" hidden>← Return to section</button><button id="back-to-workspace" class="workspace-button" type="button" hidden>Close section</button></div></div>
+        <div class="section-panels" hidden>
+          <div id="lifecycle-content" class="section-content lifecycle-section" role="region" aria-labelledby="lifecycle-title" hidden>
+          <div class="operation-grid">
+            <button class="operation-card" data-command="mgmt nodes list"><span class="operation-icon">◫</span><span><b>Node inventory</b><small>List nodes in the OCI-HPC inventory.</small></span><i>→</i></button>
+            <button class="operation-card" data-command="mgmt status --no_color"><span class="operation-icon">⌕</span><span><b>Stack status</b><small>Review overall OCI-HPC status.</small></span><i>→</i></button>
+            <button class="operation-card" data-command="mgmt recommendations list"><span class="operation-icon">!</span><span><b>Recommendations</b><small>Review nodes needing attention.</small></span><i>→</i></button>
+          </div>
+          <div class="slurm-node-operations" aria-labelledby="slurm-node-operations-title">
+            <div class="builder-title"><span class="operation-icon">≡</span><div><b id="slurm-node-operations-title">Slurm node state</b><small>Inspect node availability and manage an explicit node state.</small></div></div>
+            <div class="lifecycle-read-grid">
+              <button class="operation-card" data-command="sinfo -N -l"><span class="operation-icon">◫</span><span><b>List Of All Slurm Nodes(Including Drain Nodes)</b><small>Human-friendly node state, CPUs, memory, and partition output.</small></span><i>→</i></button>
+              <button class="operation-card" data-command="sinfo -R"><span class="operation-icon">!</span><span><b>List Of All Drain Nodes</b><small>Show unavailable or drained nodes and their recorded reason.</small></span><i>→</i></button>
+            </div>
+            <div class="node-state-builder">
+              <div><b>Drain or resume a node</b><small>Enter one node or comma-separated node names. DRAIN prevents new jobs; RESUME clears a drain after remediation.</small></div>
+              <div class="block-controls"><select id="slurm-node-state-target" aria-label="Slurm node name" disabled><option value="">Loading Slurm nodes…</option></select><select id="slurm-node-state-action" aria-label="Slurm node state"><option value="DRAIN">Drain</option><option value="RESUME">Resume</option></select><button class="lifecycle-button" data-slurm-node-state-build type="button">Build command</button></div>
+              <div id="slurm-drain-reason-field" class="block-controls"><label for="slurm-drain-reason">Reason</label><input id="slurm-drain-reason" placeholder="Reason for draining this node" maxlength="200" required></div>
+              {% if node_state_sudo %}<p class="builder-message">Drain/resume automatically uses a restricted sudo helper; do not type sudo.</p>{% endif %}
+              <p id="slurm-node-state-message" class="builder-message">A typed confirmation is required before changing a Slurm node state.</p>
+            </div>
+          </div>
+          <div class="lifecycle-actions" aria-labelledby="lifecycle-actions-title">
+            <div class="builder-title"><span class="lifecycle-warning">!</span><div><b id="lifecycle-actions-title">Destructive lifecycle actions</b><small>Build, review, and explicitly confirm changes to compute nodes.</small></div></div>
+            <div class="lifecycle-build-grid">
+              <article class="lifecycle-block lifecycle-add-block">
+                <b>Add compute nodes</b><small>Add a selected count to an existing cluster.</small>
+                <div class="block-controls"><select id="lifecycle-add-cluster" class="cluster-select" aria-label="Target cluster" disabled><option value="">Loading clusters…</option></select><input id="lifecycle-add-count" type="number" min="1" max="1000" value="1" aria-label="Number of nodes"></div>
+                <button class="lifecycle-button" data-lifecycle-build="add" type="button">Build add-node command</button>
+              </article>
+              <article class="lifecycle-block">
+                <b>Terminate compute nodes</b><small>Select a fully drained compute node. Each entry includes its drain reason; nodes still draining jobs are excluded.</small>
+                <div id="lifecycle-target-nodes" class="lifecycle-node-list" role="group" aria-label="Drained compute node to terminate"><p>Loading drained nodes…</p></div>
+                <button class="lifecycle-button" id="refresh-drained-nodes" type="button">Refresh drained nodes</button>
+                <div class="lifecycle-button-row"><button class="lifecycle-button quiet-danger" data-lifecycle-build="tag-terminate" type="button">Build tag &amp; terminate</button><button class="lifecycle-button" data-lifecycle-build="terminate" type="button">Build terminate</button></div>
+              </article>
+              <article class="lifecycle-block" aria-labelledby="bm-reboot-title">
+                <b id="bm-reboot-title">Hard reboot bare-metal node</b><small>Select a fully drained compute node. Hard reboot immediately powers it off and on; it remains drained afterward.</small>
+                <div id="bm-reboot-node" class="lifecycle-node-list" role="group" aria-label="Drained node to hard reboot"><p>Loading drained nodes…</p></div>
+                <div class="lifecycle-button-row"><button id="refresh-bm-reboot-nodes" class="lifecycle-button quiet-danger" type="button">Refresh drained nodes</button><button id="build-bm-reboot" class="lifecycle-button" type="button" disabled>Build hard reboot</button></div>
+                <p id="bm-reboot-message" class="builder-message" aria-live="polite">Choose a node, verify its OCI instance, then review and explicitly confirm the hard reboot.</p>
+              </article>
+            </div>
+            <p id="lifecycle-builder-message" class="builder-message">Execution requires typing the exact confirmation phrase shown after you choose Run command.</p>
+          </div>
+          <p class="section-note">Lifecycle commands are limited to explicit compute-node selections. Review your site runbook and the generated command before execution.</p>
+          </div>
+          <div id="management-content" class="section-content management-section" role="region" aria-labelledby="management-title" hidden>
+          <div class="operation-grid management-grid">
+            <button class="operation-card" data-command="mgmt clusters list"><span class="operation-icon">≋</span><span><b>Clusters</b><small>List configured compute clusters.</small></span><i>→</i></button>
+            <button class="operation-card" data-command="mgmt fabrics list"><span class="operation-icon">⚙</span><span><b>Fabrics</b><small>View memory fabric inventory.</small></span><i>→</i></button>
+            <button class="operation-card" data-command="mgmt images list"><span class="operation-icon">◷</span><span><b>Images</b><small>Review available cluster images.</small></span><i>→</i></button>
+          </div>
+          <div class="management-explorer" aria-labelledby="management-builder-title">
+            <div class="builder-title"><span class="operation-icon">⌘</span><div><b id="management-builder-title">Read-only Management Explorer</b><small>Choose filters, build a command, then review and run it in the command console.</small></div></div>
+            <div class="management-builder-grid">
+              <article class="management-block">
+                <b>Node inventory</b><small>Filter and choose a compact output format.</small>
+                <div class="block-controls"><select id="mgmt-node-cluster" class="cluster-select" aria-label="Cluster name" disabled><option value="">Loading clusters…</option></select><select id="mgmt-node-format" aria-label="Node output format"><option value="tabular">Table</option><option value="json">JSON</option><option value="csv">CSV</option></select></div>
+                <div class="block-controls"><select id="mgmt-node-fields" aria-label="Node inventory filter"><option value="">All nodes</option><option value="role=compute">Compute nodes</option><option value="role=login">Login nodes</option><option value="role=controller">Controller nodes</option><option value="status=running">Running nodes</option></select><button class="builder-button" data-mgmt-build="nodes" type="button">Build</button></div>
+              </article>
+              <article class="management-block">
+                <b>Fabric inventory</b><small>Show fabrics by rack availability.</small>
+                <div class="block-controls"><select id="mgmt-fabric-state" aria-label="Fabric rack state"><option value="">All rack states</option><option value="AVAILABLE">Available</option><option value="OCCUPIED">Occupied</option><option value="UNAVAILABLE">Unavailable</option></select><button class="builder-button" data-mgmt-build="fabrics" type="button">Build</button></div>
+              </article>
+              <article class="management-block">
+                <b>Images</b><small>Inspect images and optionally show only images in use.</small>
+                <div class="block-controls"><select id="mgmt-image-format" aria-label="Image output format"><option value="tabular">Table</option><option value="json">JSON</option><option value="yaml">YAML</option></select><label class="check-control"><input id="mgmt-image-used" type="checkbox"> Used only</label><button class="builder-button" data-mgmt-build="images" type="button">Build</button></div>
+              </article>
+              <article class="management-block">
+                <b>Cluster and login inventory</b><small>Choose the inventory to inspect.</small>
+                <div class="block-controls"><select id="mgmt-inventory-kind" aria-label="Inventory kind"><option value="clusters">Clusters</option><option value="login">Login nodes</option></select><select id="mgmt-inventory-format" aria-label="Inventory output format"><option value="tabular">Table</option><option value="json">JSON</option></select><button class="builder-button" data-mgmt-build="inventory" type="button">Build</button></div>
+              </article>
+              <article class="management-block">
+                <b>Network topology</b><small>View network blocks or rails for one cluster.</small>
+                <div class="block-controls"><select id="mgmt-network-cluster" class="cluster-select" aria-label="Cluster name" disabled><option value="">Loading clusters…</option></select><select id="mgmt-network-kind" aria-label="Network topology"><option value="blocks">Blocks</option><option value="rails">Rails</option></select></div>
+                <div class="block-controls"><label class="check-control"><input id="mgmt-network-nodes" type="checkbox"> Include rail nodes</label><button class="builder-button" data-mgmt-build="network" type="button">Build</button></div>
+              </article>
+              <article class="management-block">
+                <b>Recommendations</b><small>Focus the recommendation report on a known condition.</small>
+                <div class="block-controls"><select id="mgmt-recommendations-filter" aria-label="Recommendation filter"><option value="">All recommendations</option><option value="--healthcheck">Healthcheck</option><option value="--unreachable">Unreachable</option><option value="--unconfigured">Unconfigured</option></select><button class="builder-button" data-mgmt-build="recommendations" type="button">Build</button></div>
+              </article>
+              <article class="management-block">
+                <b>Configuration search</b><small>Filter known compute or login configurations.</small>
+                <div class="block-controls"><select id="mgmt-config-role" aria-label="Configuration role"><option value="all">All roles</option><option value="compute">Compute</option><option value="login">Login</option></select><input id="mgmt-config-shape" placeholder="Shape (optional)"></div>
+                <div class="block-controls"><select id="mgmt-config-format" aria-label="Configuration output format"><option value="tabular">Table</option><option value="json">JSON</option><option value="yaml">YAML</option></select><button class="builder-button" data-mgmt-build="configurations" type="button">Build</button></div>
+              </article>
+            </div>
+            <p id="management-builder-message" class="builder-message">Only documented, read-only OCI-HPC queries can be built here.</p>
+          </div>
+          </div>
+          <div id="slurm-content" class="section-content slurm-section" role="region" aria-labelledby="slurm-command-title" hidden>
+          <div class="command-builder" aria-labelledby="slurm-builder-title">
+            <div class="builder-title"><span class="operation-icon">⌘</span><div><b id="slurm-builder-title">Build a Slurm command</b><small>Choose what you want to inspect; add a value when needed.</small></div></div>
+            <div class="builder-controls slurm-builder-controls">
+              <select id="slurm-template" aria-label="Slurm operation">
+                <option value="squeue" data-placeholder="">Queue overview</option>
+                <option value="squeue --states=RUNNING" data-placeholder="">Running jobs</option>
+                <option value="squeue -u {value}" data-placeholder="Unix username">Jobs for a user</option>
+                <option value="scontrol show job {value}" data-placeholder="Slurm job ID">Inspect one job</option>
+                <option value="sinfo" data-placeholder="">Partition availability</option>
+                <option value="sacct --starttime today" data-placeholder="">Today's accounting</option>
+              </select>
+              <input id="slurm-template-value" aria-label="Required command value" placeholder="" hidden>
+              <button class="builder-button" id="build-slurm" type="button">Build</button>
+            </div>
+            <p id="builder-message" class="builder-message">Building a command never executes it.</p>
+          </div>
+          <div class="presets"><span>QUICK START</span><button data-command="squeue">Queue</button><button data-command="squeue --states=RUNNING">Running</button><button data-command="sstat">Job statistics</button></div>
+          <div class="command-builder" aria-labelledby="gpu-test-title">
+            <div class="builder-title"><span class="operation-icon">▶</span><div><b id="gpu-test-title">30-second GPU test job</b><small>One idle node · one GPU · CUDA compute · two-minute job limit including compilation.</small></div></div>
+            <div class="block-controls"><select id="gpu-test-node" aria-label="Idle GPU node" disabled><option value="">Loading idle GPU nodes…</option></select><button id="refresh-gpu-nodes" class="builder-button" type="button">Refresh nodes</button><button id="build-gpu-test" class="builder-button" type="button" disabled>Build test</button></div>
+            <p id="gpu-test-message" class="builder-message">Only idle GPU nodes in an available partition are listed. Build, then review and choose Run command in the console. This submits a job; it does not change node state.</p>
+            <p class="builder-message">Job status and test output appear automatically in the command console after submission.</p>
+          </div>
+          <p class="safety">Only controller-approved tools can run. Shell operators, redirection, and arbitrary sudo commands are blocked.{% if node_state_sudo %} Only confirmed Slurm drain/resume updates use restricted sudo.{% endif %}</p>
+          </div>
+          <div id="troubleshooting-content" class="section-content troubleshooting-section" role="region" aria-labelledby="troubleshooting-title" hidden>
+            <div class="command-builder troubleshooting-builder gpu-health-card" aria-labelledby="gpu-health-title">
+              <div class="builder-title"><span class="operation-icon">+</span><div><b id="gpu-health-title">GPU health-check</b><small>Check GPU health on one selected node with hrun.sh.</small></div></div>
+              <div class="troubleshooting-check-summary"><div><b>Hostname</b><small>Identify the selected compute node.</small></div><div><b>NVIDIA GPU status</b><small>Review the node's nvidia-smi output.</small></div><div><b>GPU setup</b><small>View the GPU setup health-check results.</small></div></div>
+              <label class="troubleshooting-node-label" for="gpu-health-node">GPU node</label>
+              <div class="block-controls node-picker-controls"><select id="gpu-health-node" aria-label="GPU health-check node" disabled><option value="">Open Troubleshooting to load GPU nodes</option></select><button id="refresh-gpu-health-nodes" class="builder-button" type="button">Refresh nodes</button><button id="build-gpu-health-check" class="builder-button" type="button" disabled>Build health-check</button></div>
+              <p id="gpu-health-message" class="builder-message" aria-live="polite">Choose a GPU node, build the check, then review and choose Run command in the console.</p>
+            </div>
+            <div class="command-builder troubleshooting-builder nccl-card" aria-labelledby="nccl-test-title">
+              <div class="builder-title"><span class="operation-icon">⇄</span><div><b id="nccl-test-title">NCCL all-reduce test</b><small>Two idle eight-GPU nodes in one partition. View live log and average bus bandwidth in Output.</small></div></div>
+              <div class="block-controls node-picker-controls"><div class="node-picker-fields"><select id="nccl-node-one" aria-label="First idle NCCL node" disabled><option value="">Open Troubleshooting to load nodes</option></select><select id="nccl-node-two" aria-label="Second idle NCCL node" disabled><option value="">Open Troubleshooting to load nodes</option></select></div><button id="refresh-nccl-nodes" class="builder-button" type="button">Refresh nodes</button><button id="build-nccl-test" class="builder-button" type="button" disabled>Build NCCL test</button></div>
+              <p id="nccl-message" class="builder-message" aria-live="polite">Select two distinct idle nodes. Submission requires confirmation.</p>
+            </div>
+            <div class="command-builder troubleshooting-builder gpu-fryer-card" aria-labelledby="gpu-fryer-title">
+              <div class="builder-title"><span class="operation-icon">♨</span><div><b id="gpu-fryer-title">gpu-fryer stress test</b><small>Reserve one idle GPU node, install missing user-local software, then stress all allocated GPUs for 120 seconds.</small></div></div>
+              <div class="block-controls node-picker-controls"><select id="gpu-fryer-node" aria-label="Idle gpu-fryer node" disabled><option value="">Open Troubleshooting to load nodes</option></select><button id="refresh-gpu-fryer-nodes" class="builder-button" type="button">Refresh nodes</button><button id="build-gpu-fryer" class="builder-button" type="button" disabled>Build gpu-fryer test</button></div>
+              <p id="gpu-fryer-message" class="builder-message" aria-live="polite">Select an idle GPU node. First-time Rust and gpu-fryer installation can take several minutes.</p>
+            </div>
+            <div class="command-builder troubleshooting-builder rdma-card" aria-labelledby="rdma-test-title">
+              <div class="builder-title"><span class="operation-icon">↔</span><div><b id="rdma-test-title">RDMA per-link bandwidth test</b><small>Test every matching RDMA interface between two idle GPU nodes with ib_write_bw. Each link runs for 10 seconds.</small></div></div>
+              <div class="block-controls node-picker-controls"><div class="node-picker-fields"><div class="rdma-node-field"><label for="rdma-server-node">Server node</label><select id="rdma-server-node" disabled><option value="">Open Troubleshooting to load nodes</option></select></div><div class="rdma-node-field"><label for="rdma-client-node">Client node</label><select id="rdma-client-node" disabled><option value="">Open Troubleshooting to load nodes</option></select></div></div><button id="refresh-rdma-nodes" class="builder-button" type="button">Refresh nodes</button><button id="build-rdma-test" class="builder-button" type="button" disabled>Build RDMA test</button></div>
+              <p id="rdma-message" class="builder-message" aria-live="polite">Choose distinct idle server and client nodes. Output shows bandwidth in Gb/s for each link.</p>
+            </div>
+          </div>
+          <div id="utilities-content" class="section-content utilities-section" role="region" aria-labelledby="utilities-title" hidden>
+            <div class="command-builder utilities-builder tenancy-builder" aria-labelledby="tenancy-id-title">
+              <div class="builder-title"><span class="operation-icon">⌘</span><div><b id="tenancy-id-title">Cluster tenancy ID</b><small>Read the unique tenancy_ocid from the controller's Ansible inventory.</small></div></div>
+              <div class="block-controls utility-action-controls"><button id="show-tenancy-id" class="builder-button" type="button">Show tenancy ID</button></div>
+              <p class="builder-message">Read-only lookup from /etc/ansible/hosts. The tenancy ID appears in Output.</p>
+            </div>
+            <div class="command-builder utilities-builder serial-builder" aria-labelledby="node-serial-title">
+              <div class="builder-title"><span class="operation-icon">#</span><div><b id="node-serial-title">Get BM node serial number</b><small>Read the system serial number from one worker node.</small></div></div>
+              <label class="troubleshooting-node-label" for="node-serial-node">Worker node</label>
+              <div class="block-controls node-picker-controls"><select id="node-serial-node" disabled><option value="">Open Utilities to load worker nodes</option></select><button id="refresh-node-serial-nodes" class="builder-button" type="button">Refresh nodes</button><button id="build-node-serial" class="builder-button" type="button" disabled>Build serial check</button></div>
+              <p id="node-serial-message" class="builder-message" aria-live="polite">Choose a worker node, then review and run the check in the command console.</p>
+            </div>
+            <div class="command-builder utilities-builder captop-builder" aria-labelledby="captop-title">
+              <div class="builder-title"><span class="operation-icon">▦</span><div><b id="captop-title">Capacity topology report</b><small>Run captop to report bare-metal capacity states, shapes, and hosts in repair.</small></div></div>
+              <div class="block-controls utility-action-controls"><div class="node-picker-fields"><input id="captop-capacity-id" aria-label="Capacity topology OCID" placeholder="Capacity topology OCID (optional)"><input id="captop-region" aria-label="Capacity topology region" placeholder="Region (optional)"></div><button id="run-captop" class="builder-button" type="button">Run captop</button></div>
+              <p id="captop-message" class="builder-message" aria-live="polite">Requires an existing capacity topology and instance-principal IAM access. Leave the ID blank for discovery. Unsupported or unconfigured environments display an error; no topology is created.</p>
+            </div>
+          </div>
+          <div id="monitoring-content" class="section-content monitoring-section" role="region" aria-labelledby="monitoring-title" hidden>
+            <form id="grafana-form" class="command-builder monitoring-builder" autocomplete="off">
+              <div class="builder-title"><span class="operation-icon">▥</span><div><b>Grafana monitoring</b><small>Open Grafana in a separate Chrome Incognito window on your Mac.</small></div></div>
+              <label for="grafana-url">Grafana IP address or URL</label>
+              <div class="block-controls"><input id="grafana-url" type="text" value="http://192.0.2.30:3000/login" placeholder="IP address, host:port, or full URL" required spellcheck="false" aria-describedby="grafana-address-help"></div>
+              <p id="grafana-address-help" class="builder-message">An IP address alone uses http://IP:3000/login. The URL is remembered in this browser. Save credentials separately below.</p>
+              <details class="monitoring-credentials"><summary>Optional sign-in credentials</summary>
+                <div class="monitoring-fields">
+                  <label for="grafana-username">Username<input id="grafana-username" type="text" autocomplete="off" spellcheck="false"></label>
+                  <label for="grafana-password">Password<span class="monitoring-password"><input id="grafana-password" type="password" autocomplete="off"><button id="grafana-toggle-password" class="builder-button" type="button" aria-label="Show password" aria-pressed="false" aria-controls="grafana-password">Show</button></span></label>
+                </div>
+                <p class="builder-message">Automatic sign-in uses the Mac browser helper to create a fresh Chrome Incognito session. Credentials are sent to the helper on this Mac and then to Grafana. Credentials are never placed in the URL. Saving keeps them in this browser’s local storage without encryption until cleared. Only save on a trusted device; clearing browser site data also removes them.</p>
+                <div class="monitoring-actions"><button id="grafana-save-credentials" class="builder-button" type="button">Save credentials</button><button id="grafana-clear-credentials" class="builder-button" type="button">Clear credentials</button></div>
+                <p id="grafana-credentials-message" class="builder-message" role="status" aria-live="polite"></p>
+              </details>
+              <p class="builder-message">The Mac browser helper must be running. To start it, run <code>scripts/start-grafana-browser-helper.sh</code> on this Mac.</p>
+              <p id="grafana-transport" class="builder-message"></p>
+              <div class="monitoring-actions"><button id="open-grafana" class="builder-button" type="submit">Open Grafana</button><a id="grafana-direct-link" href="http://192.0.2.30:3000/login" target="_blank" rel="noopener noreferrer" hidden>Open login page</a></div>
+              <p id="grafana-message" class="builder-message" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      <section class="output-pane" aria-label="Command output">
+        <section class="run-panel" aria-labelledby="run-panel-title">
+          <div><span class="eyebrow">READY TO EXECUTE</span><h2 id="run-panel-title">Review your command</h2></div>
+          <label class="command-label" for="command">APPROVED COMMAND</label>
+          <textarea id="command" spellcheck="false">squeue</textarea>
+          <div class="command-actions"><button id="run">Run command <span>⌘ ↵</span></button><button id="clear" class="quiet">Clear</button></div>
+        </section>
+        <div class="output-header"><div><span class="eyebrow">LIVE OUTPUT</span><h2 id="output-title">Ready when you are</h2></div><div id="state" class="state idle">● Idle</div></div>
+        <div class="terminal"><div class="terminal-top"><span></span><span></span><span></span><code id="terminal-command">slurm-controller:~</code></div><pre id="output"><span class="muted">Your command output will appear here.</span></pre></div>
+        <div class="output-footer"><span>Allowed: {{ allowed_commands|join(', ') }}</span><span id="last-run">No commands run yet</span></div>
+      </section>
+      </section>
+    </main>
+    <div id="confirmation-modal" class="confirmation-modal" hidden aria-hidden="true">
+      <div class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmation-title">
+        <span class="eyebrow">CONFIRM ACTION</span>
+        <h2 id="confirmation-title">Confirm selected action</h2>
+        <p>Review the selected command, then copy or type <strong>confirm</strong> below and choose Confirm action.</p>
+        <pre id="confirmation-command" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
+        <div class="confirmation-phrase"><code id="confirmation-phrase"></code><button id="copy-confirmation" type="button">Copy phrase</button></div>
+        <label for="confirmation-input">Confirmation phrase</label>
+        <input id="confirmation-input" autocomplete="off" spellcheck="false">
+        <p id="confirmation-error" class="confirmation-error" hidden>Paste the exact confirmation phrase to continue.</p>
+        <div class="confirmation-actions"><button id="cancel-confirmation" class="quiet" type="button">Cancel</button><button id="confirm-lifecycle-action" class="danger" type="button">Confirm action</button></div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='monitoring.js', v='monitoring-incognito-20261016') }}"></script>
+    <script src="{{ url_for('static', filename='app.js', v='nccl-output-20261016') }}"></script>
+  </body>
+</html>

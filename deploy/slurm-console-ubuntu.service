@@ -1,0 +1,23 @@
+[Unit]
+Description=OCI Slurm Console Flask application
+After=network.target slurmctld.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/slurm-console
+Environment="PATH=/home/ubuntu/slurm-console/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="SLURM_CONSOLE_TIMEOUT=60"
+Environment="SLURM_CONSOLE_ALLOWED_COMMANDS=squeue,sinfo,scontrol,sacct,sstat,mgmt"
+Environment="SLURM_CONSOLE_ENABLE_LIFECYCLE_ACTIONS=1"
+ExecStart=/home/ubuntu/slurm-console/.venv/bin/gunicorn --workers 2 --timeout 900 --graceful-timeout 60 --bind 127.0.0.1:8080 --access-logfile - --error-logfile - app:app
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target
