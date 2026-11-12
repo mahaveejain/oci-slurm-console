@@ -2,9 +2,24 @@
 
 A web-based operations console for Slurm and OCI HPC clusters, with streamed output, GPU diagnostics, and optional node lifecycle tools.
 
-[Getting started](#local-run) · [Deployment](#controller-deployment) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
+[Interface](#interface-overview) · [Getting started](#local-run) · [Deployment](#controller-deployment) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
-A small Flask web console for a Slurm controller. It presents a command workspace on the left and streamed command output on the right. The layout is designed for the same kind of operational workflow supported by AWS Engineering Development Hub (EDH), while remaining a standalone controller-side service.
+## Interface overview
+
+A unified workspace for cluster operations, with dedicated sections for node lifecycle, management commands, Slurm workloads, troubleshooting, utilities, and monitoring.
+
+[![OCI Slurm Console troubleshooting workspace showing GPU health checks, NCCL all-reduce, GPU stress testing, and RDMA bandwidth diagnostics](docs/images/oci-slurm-console-troubleshooting.png)](docs/images/oci-slurm-console-troubleshooting.png)
+
+*Troubleshooting workspace. Select nodes, build a diagnostic command, and review it before execution. Click the image to view it at full resolution.*
+
+| Diagnostic | Purpose |
+| --- | --- |
+| GPU health check | Inspect node identity, NVIDIA GPU status, and GPU setup checks on a selected node. |
+| NCCL all-reduce | Measure collective communication performance between two idle eight-GPU nodes in the same partition. |
+| GPU stress test | Reserve an idle GPU node and exercise allocated GPUs with a bounded 120-second test. |
+| RDMA bandwidth | Check bandwidth across matching RDMA interfaces between two distinct idle GPU nodes. |
+
+Commands and results are presented in the command console with streamed output. Available operations depend on the controller tooling, node state, and enabled service configuration.
 
 ## Security model
 
